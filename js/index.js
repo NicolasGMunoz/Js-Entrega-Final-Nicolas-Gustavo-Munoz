@@ -4,52 +4,9 @@ let carrito = [];
 let max = 1000;
 let min = 0;
 const btAddToCard = document.getElementsByClassName('btAddToCard')
+const urlP1 = "https://648f942175a96b664445391d.mockapi.io/products"
+const urlP2 = "https://648f942175a96b664445391d.mockapi.io/products2"
 
-
-
-
-
-/*creamos los array´s de productos de la tienda*/
-const productos1 = [
-    {
-        id: 1,
-        name: "Mate Impresion 3D Harry Potter",
-        price: 3200,
-        foto: "./assets/matesIndex/Mate1.png"
-    },
-    {
-        id: 2,
-        name: "Mate Impresion 3D Naruto",
-        price: 2700,
-        foto: "./assets/matesIndex/Mate2.png"
-    },
-    {
-        id: 3,
-        name: "Mate Impresion 3D Snorlax",
-        price: 2700,
-        foto: "./assets/matesIndex/Mate3.png"
-    },
-]
-const productos2 =[
-    {
-        id: 4,
-        name: "Remera Negra Itachi",
-        price: 3000,
-        foto: "./assets/remerasIndex/Remera Itachi .png"
-    },
-    {
-        id: 5,
-        name: "Remera Negra Kakashi",
-        price: 3500,
-        foto: "./assets/remerasIndex/Remera Kakashi.png"
-    },
-    {
-        id: 6,
-        name: "Remera Negra Luffy",
-        price: 3000,
-        foto: "./assets/remerasIndex/Remera one piece 2.png"
-    },
-]
 
 
 /* Creamos la clase constructor de los productos  */
@@ -59,19 +16,41 @@ class Producto {
         this.name = name
         this.price = price
         this.foto = foto
+        
     }
 }
 
-/* Funcion que pushea los productos */
-function cargaDeProductos() {
-    for (const producto of productos1){
+/* Funcion asincronica que con FETCH trae los productos de la api y los pasa a un array de los productos especificos*/
+async function cargaDeProductos(producto){
+    const resp1 = await fetch(urlP1,{
+        method: "GET",
+        body: JSON.stringify(producto),
+        headers:{
+            "Content-Type": "application/json",
+        }
+    })
+    const data1 = await resp1.json()
+    data1.forEach((producto)=>{
         productos3D.push(new Producto(producto.id, producto.name, producto.price, producto.foto))
+    })
+    
+    const resp2 = await fetch(urlP2,{
+        method: "GET",
+        body: JSON.stringify(producto),
+        headers:{
+            "Content-Type": "application/json",
         }
-    for (const producto of productos2){
+    })
+    const data2 = await resp2.json()
+    data2.forEach((producto)=>{
         productosRemera.push(new Producto(producto.id, producto.name, producto.price, producto.foto))
-        }
+    })
+    agregarProductosAlHtml2()
+    agregarProductosAlHtml1()
+    cargaBt()
 }
-cargaDeProductos();
+cargaDeProductos()
+
 
 
 
@@ -93,8 +72,8 @@ function agregarProductosAlHtml1(){
     document.getElementById("3D").innerHTML += template
     })    
 }
-agregarProductosAlHtml1()
 
+/* Creamos la funcion para agregar nuestro array de prodcutos con DOM */
 function agregarProductosAlHtml2(){
     productosRemera.forEach((producto)=>{
         let template = `          
@@ -112,7 +91,6 @@ function agregarProductosAlHtml2(){
     document.getElementById("Remeras").innerHTML += template
     })
 }
-agregarProductosAlHtml2()
 
 
 /* funcion que recibe un value para setearlo como id y poder cargar productos al carrito */
@@ -149,6 +127,6 @@ function cargaBt(){
         }) 
     }
 }
-cargaBt()
+
 
 
